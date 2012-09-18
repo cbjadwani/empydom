@@ -3,7 +3,7 @@
 # Constants
 
 # Absolute path to the firefox addon-sdk
-ADDON_SDK=~/Downloads/addon-sdk-1.6.1/bin
+ADDON_SDK=~/Downloads/addon-sdk-1.9/bin
 
 # TODO: Ability to start from a clean python.opt.js
 # The optimized cpython javascript file with canaries in the right places
@@ -22,7 +22,8 @@ FS_FORCE_LOAD_FILE='../lib/fs_force_load_file.js'
 CANARY='&&&^^^&&&'
 
 # Put the files that need to be parsed first, first
-FILES_TO_PARSE=( $PYTHON_OPT_JS '../chrome-extension/empydom.user.js' '../firefox-extension/data/python.js' )
+#FILES_TO_PARSE=( $PYTHON_OPT_JS '../chrome-extension/empydom.user.js' '../firefox-extension/data/python.js' )
+FILES_TO_PARSE=( $PYTHON_OPT_JS '../firefox-extension/data/python.js' )
 # These are the names of the variables that need to be updated when the file is updated
 SPECIAL_VARS=( "PYTHON_OPT_JS" )
 # Names of variables that point to files that need to be smashed
@@ -99,10 +100,10 @@ rm -rf "$DIR/../out/tmp"
 # TODO: Make this less manual
 pushd $DIR/../out > /dev/null
 
-# Chrome
-mkdir -p chrome
-mv empydom.user.js chrome/
-echo "Built chrome user script"
+## Chrome
+#mkdir -p chrome
+#mv empydom.user.js chrome/
+#echo "Built chrome user script"
 
 # Firefox
 mkdir -p firefox/data/
@@ -115,3 +116,4 @@ popd > /dev/null
 rm python.opt.js
 
 popd > /dev/null
+cp out/firefox/data/python.js srv/python.js

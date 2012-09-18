@@ -1,6 +1,6 @@
 
 (function() {
-  var window = unsafeWindow;
+  // var window = unsafeWindow;
 
   window.empydom =
 &&&^^^&&&JS_EMPYDOM
@@ -13,12 +13,10 @@
     return document.getElementById('give_me_empydom_please') !== null
   };
 
-  if (wantsEmpythoned()) {
-
+  window.onload = function () {
     loadEmpythoned();
-    unsafeWindow.Python = Python;
-    unsafeWindow.onEmpydomReady();
-
-  }
+    window.Python = Python;
+    window.onEmpydomReady && window.onEmpydomReady();
+  };
 })();
 

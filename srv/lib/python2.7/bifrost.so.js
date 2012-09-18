@@ -20,87 +20,92 @@
   var $struct__IO_marker___SIZE = 12;
   var $struct__typeobject___SIZE = 196;
   var __str;
-  var __str1;
   var _BifrostMethods;
   var __str2;
   var __str3;
   var __str4;
+  // JSObj
+  //
+  function get_pystr_from_string(string) {
+    var c_str = Python.allocateString(string);
+    var py_str;
+    try {
+      py_str = _PyString_FromString(c_str);
+    } finally {
+      _free(c_str);
+    }
+    return py_str;
+  }
+  //
   function _run($self, $args) {
+    var $debug = true;
     var __stackBase__ = STACKTOP;
-    STACKTOP += 20;
+    STACKTOP += 8;
     assert(STACKTOP < STACK_MAX);
-    _memset(__stackBase__, 0, 20);
+    _memset(__stackBase__, 0, 8);
     var __label__;
+    var retval;
     __label__ = -1;
     while (1) switch (__label__) {
      case -1:
-      
-      var $args_addr = __stackBase__ + 4;
-      var $retval = __stackBase__ + 8;
-      var $0 = __stackBase__ + 12;
-      var $script = __stackBase__ + 16;
-      
+
+      var $script = __stackBase__ + 4;
+
       HEAP[__stackBase__] = $self;
-      HEAP[$args_addr] = $args;
-      var $1 = HEAP[$args_addr];
-      var $2 = _PyArg_ParseTuple($1, __str, allocate([ $script, 0, 0, 0 ], [ "i8**", 0, 0, 0 ], ALLOC_STACK));
-      
-      if ($2 == 0) {
-        __label__ = 1;
-        break;
+      var res = _PyArg_ParseTuple($args, __str, allocate([ $script, 0, 0, 0 ], [ "i8**", 0, 0, 0 ], ALLOC_STACK));
+
+      if (res == 0) {
+        retval = 0;
+        __label__ = 3;
       } else {
         __label__ = 2;
-        break;
       }
-     case 1:
-      HEAP[$0] = 0;
-      __label__ = 3;
       break;
      case 2:
-      var $4 = HEAP[$script];
-      //var $5 = _printf(__str1, allocate([ $4, 0, 0, 0 ], [ "i8*", 0, 0, 0 ], ALLOC_STACK));
-      var $6 = HEAP[$script];
-      //_emscripten_run_script($6);
-      eval(Pointer_stringify($6));
-      //console.log(eval(Pointer_stringify($6)));
-      
-      var $8 = HEAP[__Py_NoneStruct] + 1;
-      HEAP[__Py_NoneStruct] = $8;
-      HEAP[$0] = __Py_NoneStruct;
+      var _script = Pointer_stringify(HEAP[$script]);
+      var result, error;
+      try {
+        if ($debug)
+          console.log("js: eval " + _script);
+        result = eval(_script);
+      } catch (error) {
+        var to_py = "raise JSError(" + JSON.stringify(error.stack) + ")";
+        if ($debug)
+          console.log("js: error: " + to_py);
+        retval = get_pystr_from_string(to_py);
+        __label__ = 3;
+        break;
+      }
+      empydom._jsobj_refs["error"] = "";
+      if ($debug)
+        console.log("js: result: " + result);
+      var rx = /^empydom\._jsobj_refs\[["']([\-a-z0-9]*)['"]\]\[["']([\-A-Za-z0-9]*)['"]];$/;
+      var match = _script.match(rx);
+      var parent_ref;
+      if (match && match[2].charAt() !== match[2].charAt().toUpperCase()) {
+        parent_ref = match[1];
+      }
+      var to_py = "retval = " + empydom._to_python(result, parent_ref);
+      if ($debug)
+        console.log("py: " + to_py);
+      retval = get_pystr_from_string(to_py);
       __label__ = 3;
       break;
+
      case 3:
-      var $9 = HEAP[$0];
-      HEAP[$retval] = $9;
-      __label__ = 4;
-      break;
-     case 4:
-      var $retval3 = HEAP[$retval];
       STACKTOP = __stackBase__;
-      return $retval3;
+      return retval;
      default:
       assert(0, "bad label: " + __label__);
     }
   }
   function _initbifrost() {
-    var __label__;
-    __label__ = -1;
-    while (1) switch (__label__) {
-     case -1:
-      var $0 = _Py_InitModule4(__str4, _BifrostMethods, 0, 0, 1013);
-      __label__ = 1;
-      break;
-     case 1:
-      return;
-     default:
-      assert(0, "bad label: " + __label__);
-    }
+    _Py_InitModule4(__str4, _BifrostMethods, 0, 0, 1013);
   }
   Module["_initbifrost"] = _initbifrost;
   FUNCTION_TABLE = FUNCTION_TABLE.concat([ 0, 0, _run, 0 ]);
   function run(args) {
     __str = allocate([ 115, 0 ], "i8", ALLOC_NORMAL);
-    __str1 = allocate([ 82, 117, 110, 110, 105, 110, 103, 58, 32, 37, 115, 10, 0 ], "i8", ALLOC_NORMAL);
     _BifrostMethods = allocate([ 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ "i8*", 0, 0, 0, "%struct.PyObject* (%struct.PyObject*, %struct.PyObject*)*", 0, 0, 0, "i32", 0, 0, 0, "i8*", 0, 0, 0, "i8*", 0, 0, 0, "%struct.PyObject* (%struct.PyObject*, %struct.PyObject*)*", 0, 0, 0, "i32", 0, 0, 0, "i8*", 0, 0, 0 ], ALLOC_NORMAL);
     __str2 = allocate([ 114, 117, 110, 0 ], "i8", ALLOC_NORMAL);
     __str3 = allocate([ 82, 117, 110, 32, 106, 97, 118, 97, 115, 99, 114, 105, 112, 116, 32, 99, 111, 100, 101, 0 ], "i8", ALLOC_NORMAL);

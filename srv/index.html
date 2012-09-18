@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JSPy Demo</title>
+    <script src="json2.js"> </script>
+    <script type="text/python">
+    import math
+
+
+    class Point(object):
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+        @property
+        def mag(self):
+            return math.sqrt(self.x ** 2 + self.y ** 2)
+
+        def __str__(self):
+            return "%s(%s, %s)" % (self.__class__.__name__, self.x, self.y)
+
+
+    p = Point(3, 4)
+    print "Hello from python script!"
+    </script>
+    <script>
+      function start() {
+        var input = document.getElementById('input');
+        var output = document.getElementById('output');
+        var button = document.getElementById('button');
+
+        Python.initialize(null, function(chr) {
+          if (chr !== null) output.value += String.fromCharCode(chr);
+        });
+
+        //run code in <script> tags
+        window.empydom.executePythonScripts();
+        window.document.getElementById('loading').innerHTML = "";
+
+        button.onclick = function() {
+          if (Python.isFinished(input.value)) {
+            output.value = '';
+            var result = Python.eval(input.value);
+            if (result !== null && result !== undefined) {
+              output.value += '\n--------------------------\nResult: ' + result;
+            }
+            output.scrollTop = output.scrollHeight;
+          } else {
+            output.value = 'Command not finished.';
+          }
+        }
+
+        Object.defineProperty(Python, 'js', {
+          'get': function () {
+            var globals = eval(Python.eval("globals().keys()"));
+            return empydom.create_python_proxy('', globals);
+          }
+        });
+      };
+     window.onEmpydomReady = start;
+     // window.onload = start;
+    </script>
+    <script src="python.js"> </script>
+  </head>
+  <body>
+    <div id='give_me_empydom_please'></div>
+    <h1>JSPy Demo</h1>
+    <div id='loading'>loading...</div>
+    <div style="float: left; width: 50%">
+        <h3>Python console</h3>
+        <textarea id="input" style="font-family: monospace; width: 80%" rows="8">
+print p
+print "The magnitude of p is", p.mag
+
+button = window.document.getElementById('test-button')
+button.innerText = "Button label changed in Python"
+        </textarea>
+    </div>
+    <div style="clear:both">
+    </div>
+
+    <input id="button" type="button" value="Execute" style="display: block; margin: auto" />
+    <button id="test-button">A Button</button>
+    <textarea id="output" style="font-family: monospace; width: 80%" rows="8"></textarea>
+    <hr>
+  </body>
+</html>
